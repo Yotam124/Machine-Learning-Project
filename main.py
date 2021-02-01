@@ -2,6 +2,7 @@
 import numpy as np
 import pickle
 import itertools
+import re
 
 # System
 import os, fnmatch
@@ -52,7 +53,7 @@ def get_features(y, sr=fs):
 if __name__ == '__main__':
 
     # Get files in data path
-    path = './IRMAS-TrainingData/'
+    path = './training-set/'
 
     # Get Audio Files
     files = []
@@ -65,7 +66,9 @@ if __name__ == '__main__':
 
     # Get Labels
     labels = []
-    classes = ['cel', 'cla', 'flu', 'gac', 'gel', 'org', 'pia', 'sax', 'tru', 'vio', 'voi']
+    # classes = ['cel', 'cla', 'flu', 'gac', 'gel', 'org', 'pia', 'sax', 'tru', 'vio', 'voi', '[flu][cla]']
+    classes = []
+
     color_dict = {'cel': 'A',
                   'cla': 'B',
                   'flu': 'C',
@@ -77,18 +80,27 @@ if __name__ == '__main__':
                   'tru': 'I',
                   'vio': 'J',
                   'voi': 'K',
+                  '[flu][cla]': 'L',
                   }
     color_list = []
     for filename in files:
-        for name in classes:
-            if fnmatch.fnmatchcase(filename, '*' + name + '*'):
-                labels.append(name)
-                color_list.append(color_dict[name])
-                break
-        else:
-            labels.append('other')
+        result = re.search(r'\[[a-z]+\](\[[a-z]+\])*', filename).group()
+        labels.append(result)
+        if not classes.__contains__(result):
+            classes.append(result)
+        # color_list.append(color_dict[name])
 
     print(labels)
+    # for filename in files:
+    #     for name in classes:
+    #         if fnmatch.fnmatchcase(filename, '*' + name + '*'):
+    #             labels.append(name)
+    #             color_list.append(color_dict[name])
+    #             break
+    #     else:
+    #         labels.append('other')
+    #
+    # print(labels)
 
     # Encode Labels
     labelencoder = LabelEncoder()
