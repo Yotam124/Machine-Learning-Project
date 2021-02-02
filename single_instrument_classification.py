@@ -1,9 +1,16 @@
+import numpy as np
+
 from sklearn.model_selection import train_test_split, StratifiedShuffleSplit
-from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import recall_score, precision_score, accuracy_score
 from sklearn.metrics import confusion_matrix, f1_score, classification_report
 
-import numpy as np
+# KNN
+from sklearn.neighbors import KNeighborsClassifier
+
+# SVM
+from sklearn.svm import LinearSVC, SVC
+import joblib
+
 # Audio
 from audio_analysis import get_feature_vector
 from audio_analysis import label_encoder
@@ -24,6 +31,7 @@ if __name__ == '__main__':
     test_set = get_feature_vector(test_files)
 
     # ------------------------ KNN ------------------------
+    print('------------------------ KNN ------------------------')
     # Machine Learning Parameters
     n_neighbors = 1  # Number of neighbors for kNN Classifier
 
@@ -36,7 +44,42 @@ if __name__ == '__main__':
     # Predict using the Test Set
     predicted_labels = model_knn.predict(test_set)
 
-    # ------------------------ Evaluation - KNN ------------------------
+    # ------------------------ KNN - Evaluation ------------------------
+    # Recall - the ability of the classifier to find all the positive samples
+    print("Recall: ", recall_score(test_classes, predicted_labels, average=None, zero_division=1))
+
+    # Precision - The precision is intuitively the ability of the classifier not to
+    # label as positive a sample that is negative
+    print("Precision: ", precision_score(test_classes, predicted_labels, average=None, zero_division=1))
+
+    # F1-Score - The F1 score can be interpreted as a weighted average of the precision
+    # and recall
+    print("F1-Score: ", f1_score(test_classes, predicted_labels, average=None, zero_division=1))
+
+    # Accuracy - the number of correctly classified samples
+    print("Accuracy: %.2f  ," % accuracy_score(test_classes, predicted_labels, normalize=True),
+          accuracy_score(test_classes, predicted_labels, normalize=False))
+    print("Number of samples:", test_classes.shape[0])
+
+    # ------------------------ SVM ------------------------
+    print('------------------------ SVM ------------------------')
+    # model_svm = LinearSVC(random_state=0, tol=1e-5, max_iter=5000)
+    svclassifier = SVC(kernel='rbf', C=10.0, gamma=0.1)
+
+    # SVM
+    # model_svm.fit(train_set, train_classes);
+    svclassifier.fit(train_set, train_classes)
+
+    # Save
+    joblib.dump(svclassifier, 'trainedSVM.joblib')
+    # Load
+    # svclassifier = joblib.load('filename.joblib')
+
+    # Predict using the Test Set
+    # predicted_labels = model_svm.predict(test_set)
+    predicted_labels = svclassifier.predict(test_set)
+
+    # ------------------------ SVM - Evaluation ------------------------
 
     # Recall - the ability of the classifier to find all the positive samples
     print("Recall: ", recall_score(test_classes, predicted_labels, average=None, zero_division=1))
