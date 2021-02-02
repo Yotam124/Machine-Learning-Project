@@ -1,24 +1,17 @@
-# Load Files
-from load_files import load_train_set
-from load_files import load_test_set
+from sklearn.model_selection import train_test_split
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import recall_score, precision_score, accuracy_score
+from sklearn.metrics import confusion_matrix, f1_score, classification_report
 
 # Audio
 from audio_analysis import get_feature_vector
 from audio_analysis import label_encoder
 
-# Visualization
-import seaborn
-import matplotlib.pyplot as plt
-from IPython.core.display import HTML, display
-
-# Machine Learning
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.metrics import recall_score, precision_score, accuracy_score
-from sklearn.metrics import confusion_matrix, f1_score, classification_report
+from load_files import load_train_set
 
 if __name__ == '__main__':
-    train_files, train_labels = load_train_set()
-    test_files, test_labels = load_test_set()
+    data_set, data_labels = load_train_set()
+    train_files, test_files, train_labels, test_labels = train_test_split(data_set, data_labels, test_size=0.25)
 
     classes_num_train = label_encoder(train_labels)
     classes_num_test = label_encoder(test_labels)
@@ -29,27 +22,7 @@ if __name__ == '__main__':
     test_set = get_feature_vector(test_files)
     test_classes = classes_num_test
 
-    # testset_size = 0.25  # Percentage of data for Testing
-
-    # # Create Train and Test Set
-    # splitter = StratifiedShuffleSplit(n_splits=1, test_size=testset_size, random_state=0)
-    # splits = splitter.split(scaled_feature_vectors, classes_num)
-    # for train_index, test_index in splits:
-    #     train_set = scaled_feature_vectors[train_index]
-    #     test_set = scaled_feature_vectors[test_index]
-    #     train_classes = classes_num[train_index]
-    #     test_classes = classes_num[test_index]
-
-    # Check Set Shapes
-    print()
-    print("train_set shape:", train_set.shape)
-    print("test_set shape:", test_set.shape)
-    print("train_classes shape:", train_classes.shape)
-    print("test_classes shape:", test_classes.shape)
-    print()
-
     # ------------------------ KNN ------------------------
-
     # Machine Learning Parameters
     n_neighbors = 1  # Number of neighbors for kNN Classifier
 
@@ -62,7 +35,7 @@ if __name__ == '__main__':
     # Predict using the Test Set
     predicted_labels = model_knn.predict(test_set)
 
-    # ------------------------ Evaluation ------------------------
+    # ------------------------ Evaluation - KNN ------------------------
 
     # Recall - the ability of the classifier to find all the positive samples
     print("Recall: ", recall_score(test_classes, predicted_labels, average=None))
