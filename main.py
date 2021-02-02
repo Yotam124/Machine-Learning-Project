@@ -36,10 +36,6 @@ hop_length = 512  # Number of samples between successive frames
 n_mels = 128  # Number of Mel bands
 n_mfcc = 13  # Number of MFCCs
 
-# Machine Learning Parameters
-testset_size = 0.25  # Percentage of data for Testing
-n_neighbors = 1  # Number of neighbors for kNN Classifier
-
 
 # Define Function to Calculate MFCC, Delta_MFCC and Delta2_MFCC
 def get_features(y, sr=fs):
@@ -50,65 +46,18 @@ def get_features(y, sr=fs):
     return feature_vector
 
 
-if __name__ == '__main__':
-
-    # Get files in data path
-    path = './training-set/'
-
-    # Get Audio Files
-    files = []
-
-    for root, dirnames, filenames in os.walk(path):
-        for filename in fnmatch.filter(filenames, '*.wav'):
-            files.append(os.path.join(root, filename))
-
-    print("found %d audio files in %s" % (len(files), path))
-
-    # Get Labels
-    labels = []
-    # classes = ['cel', 'cla', 'flu', 'gac', 'gel', 'org', 'pia', 'sax', 'tru', 'vio', 'voi', '[flu][cla]']
-    classes = []
-
-    color_dict = {'cel': 'A',
-                  'cla': 'B',
-                  'flu': 'C',
-                  'gac': 'D',
-                  'gel': 'E',
-                  'org': 'F',
-                  'pia': 'G',
-                  'sax': 'H',
-                  'tru': 'I',
-                  'vio': 'J',
-                  'voi': 'K',
-                  '[flu][cla]': 'L',
-                  }
-    color_list = []
-    for filename in files:
-        result = re.search(r'\[[a-z]+\](\[[a-z]+\])*', filename).group()
-        labels.append(result)
-        if not classes.__contains__(result):
-            classes.append(result)
-        # color_list.append(color_dict[name])
-
+# Encode Labels
+def label_encoder(labels):
     print(labels)
-    # for filename in files:
-    #     for name in classes:
-    #         if fnmatch.fnmatchcase(filename, '*' + name + '*'):
-    #             labels.append(name)
-    #             color_list.append(color_dict[name])
-    #             break
-    #     else:
-    #         labels.append('other')
-    #
-    # print(labels)
-
-    # Encode Labels
     labelencoder = LabelEncoder()
     labelencoder.fit(labels)
     print(len(labelencoder.classes_), "classes:", ", ".join(list(labelencoder.classes_)))
     classes_num = labelencoder.transform(labels)
+    return classes_num
 
-    # Load audio files, calculate features and create feature vectors
+
+# Load audio files, calculate features and create feature vectors
+def get_feature_vector(files):
     feature_vectors = []
     sound_paths = []
     for i, f in enumerate(files):
@@ -116,6 +65,7 @@ if __name__ == '__main__':
         try:
             y, sr = librosa.load(f, sr=fs)
             y /= y.max()  # Normalize
+
             if len(y) < 2:
                 print("Error loading %s" % f)
                 continue
@@ -131,15 +81,68 @@ if __name__ == '__main__':
     scaler = StandardScaler()
     scaled_feature_vectors = scaler.fit_transform(np.array(feature_vectors))
     print("Feature vectors shape:", scaled_feature_vectors.shape)
+    return scaled_feature_vectors
 
-    # Create Train and Test Set
-    splitter = StratifiedShuffleSplit(n_splits=1, test_size=testset_size, random_state=0)
-    splits = splitter.split(scaled_feature_vectors, classes_num)
-    for train_index, test_index in splits:
-        train_set = scaled_feature_vectors[train_index]
-        test_set = scaled_feature_vectors[test_index]
-        train_classes = classes_num[train_index]
-        test_classes = classes_num[test_index]
+
+if __name__ == '__main__':
+
+    # Get files in data path
+    train_path = './IRMAS-TrainingData/'
+    test_path = './IRMAS-TestingData/Part1/'
+
+    # Get Audio Files for train
+    train_files = []
+    for root, dirnames, filenames in os.walk(train_path):
+        for filename in fnmatch.filter(filenames, '*.wav'):
+            train_files.append(os.path.join(root, filename))
+
+    print("found %d audio files in %s" % (len(train_files), train_path))
+
+    # Get Labels for train-set
+    train_labels = []
+    classes = []
+    for filename in train_files:
+        result = re.search(r'\[[a-z]+\](\[[a-z]+\])*', filename).group()
+        train_labels.append(result)
+        if not classes.__contains__(result):
+            classes.append(result)
+
+    # Get Audio Files for test
+    test_files = []
+    test_labels = []
+    for root, dirnames, filenames in os.walk(test_path):
+        # Audio file
+        for filename in fnmatch.filter(filenames, '*.wav'):
+            test_files.append(os.path.join(root, filename))
+        # Text file
+        for filename in fnmatch.filter(filenames, '*.txt'):
+            f = open(os.path.join(root, filename), 'r')
+            data = f.read().split()
+            instruments = ''
+            for s in data:
+                instruments += '[' + s + ']'
+            test_labels.append(instruments)
+    print("found %d audio files in %s" % (len(test_files), test_path))
+
+    classes_num_train = label_encoder(train_labels)
+    classes_num_test = label_encoder(test_labels)
+
+    train_set = get_feature_vector(train_files)
+    train_classes = classes_num_train
+
+    test_set = get_feature_vector(test_files)
+    test_classes = classes_num_test
+
+    # testset_size = 0.25  # Percentage of data for Testing
+
+    # # Create Train and Test Set
+    # splitter = StratifiedShuffleSplit(n_splits=1, test_size=testset_size, random_state=0)
+    # splits = splitter.split(scaled_feature_vectors, classes_num)
+    # for train_index, test_index in splits:
+    #     train_set = scaled_feature_vectors[train_index]
+    #     test_set = scaled_feature_vectors[test_index]
+    #     train_classes = classes_num[train_index]
+    #     test_classes = classes_num[test_index]
 
     # Check Set Shapes
     print()
@@ -151,8 +154,10 @@ if __name__ == '__main__':
 
     # ------------------------ KNN ------------------------
 
+    # Machine Learning Parameters
+    n_neighbors = 1  # Number of neighbors for kNN Classifier
+
     # KNN Classifier
-    n_neighbors = 1
     model_knn = KNeighborsClassifier(n_neighbors=n_neighbors)
 
     # kNN
