@@ -31,7 +31,22 @@ def label_encoder(labels):
     labelencoder.fit(labels)
     print(len(labelencoder.classes_), "classes:", ", ".join(list(labelencoder.classes_)))
     classes_num = labelencoder.transform(labels)
-    return classes_num
+    return [classes_num, list(labelencoder.classes_)]
+
+
+def label_encoder_for_test(encoded_classes, test_labels):
+    classes_num = []
+    for label in test_labels:
+        if label not in encoded_classes:
+            classes_num.append(len(test_labels)*2)
+        else:
+            classes_num.append(encoded_classes.index(label))
+
+    labelencoder = LabelEncoder()
+    labelencoder.fit(test_labels)
+    print(len(labelencoder.classes_), "classes:", ", ".join(list(labelencoder.classes_)))
+
+    return np.array(classes_num)
 
 
 # Load audio files, calculate features and create feature vectors
@@ -43,7 +58,6 @@ def get_feature_vector(files):
         try:
             y, sr = librosa.load(f, sr=fs)
             y /= y.max()  # Normalize
-
             if len(y) < 2:
                 print("Error loading %s" % f)
                 continue

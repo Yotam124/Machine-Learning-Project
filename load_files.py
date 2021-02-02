@@ -4,14 +4,14 @@ import os
 
 import re
 
-train_path = './IRMAS-TrainingData/'
+train_path = './data-set/'
 test_path = './IRMAS-TestingData/Part1/'
 
 
 def load_train_set(single_instrument=True):
     # Get Audio Files for train
     train_files = []
-    regex_pattern = re.compile(r'^\[[a-z]+\](\[[a-z]+_[a-z]+\])+')
+    # regex_pattern = re.compile(r'^\[[a-z]+\](\[[a-z]+_[a-z]+\])+')
     # regex_pattern = re.compile(r'^\[[a-z]+\](\[pop_roc\])')
     for root, dirnames, filenames in os.walk(train_path):
         for filename in fnmatch.filter(filenames, '*.wav'):
@@ -29,8 +29,11 @@ def load_train_set(single_instrument=True):
     for filename in train_files:
         if single_instrument:
             # result = re.search(r'\[[a-z]+\](\[[a-z]+_[a-z]+\])*', filename).group()
-            result = re.search(r'(\[[a-z]+\])', filename).group()
-            print(result)
+            result = filename.split('_')
+            result = result[0]
+            result = result.split('\\')
+            result = result[len(result)-1]
+
         else:
             result = re.search(r'(\[[a-z]+\](\[[a-z]+\])*)', filename).group()
         train_labels.append(result)
