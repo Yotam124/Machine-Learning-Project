@@ -15,7 +15,6 @@ def load_train_set(single_instrument=True):
     # regex_pattern = re.compile(r'^\[[a-z]+\](\[pop_roc\])')
     for root, dirnames, filenames in os.walk(train_path):
         for filename in fnmatch.filter(filenames, '*.wav'):
-            print(os.path.join(root, filename))
             # if single_instrument:
             #     if re.search(regex_pattern, filename):
             #         train_files.append(os.path.join(root, filename))
