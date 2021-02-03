@@ -27,7 +27,7 @@ from audio_analysis import label_encoder_for_test
 from load_files import load_train_set
 
 if __name__ == '__main__':
-    data_set, data_labels = load_train_set()
+    data_set, data_labels = load_train_set('./data-set/')
     train_files, test_files, train_labels, test_labels = train_test_split(data_set, data_labels, test_size=0.25)
 
     # classes_num_train = label_encoder(train_labels)

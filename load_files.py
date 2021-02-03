@@ -4,11 +4,8 @@ import os
 
 import re
 
-train_path = './data-set/'
-test_path = './IRMAS-TestingData/Part1/'
 
-
-def load_train_set(single_instrument=True):
+def load_train_set(train_path='./data-set/', single_instrument=True):
     # Get Audio Files for train
     train_files = []
     # regex_pattern = re.compile(r'^\[[a-z]+\](\[[a-z]+_[a-z]+\])+')
@@ -32,7 +29,7 @@ def load_train_set(single_instrument=True):
             result = filename.split('_')
             result = result[0]
             result = result.split('\\')
-            result = result[len(result)-1]
+            result = result[len(result) - 1]
 
         else:
             result = re.search(r'(\[[a-z]+\](\[[a-z]+\])*)', filename).group()
@@ -42,21 +39,39 @@ def load_train_set(single_instrument=True):
     return [train_files, train_labels]
 
 
-def load_test_set():
+def load_test_set(test_path='./IRMAS-TrainingData/'):
     # Get Audio Files for test
     test_files = []
     test_labels = []
+    classes = [
+        'cello',
+        'clarinet',
+        'flute',
+        'guitar',
+        'saxophone',
+        'trumpet',
+        'violin',
+
+    ]
     for root, dirnames, filenames in os.walk(test_path):
         # Audio file
         for filename in fnmatch.filter(filenames, '*.wav'):
             test_files.append(os.path.join(root, filename))
+            filename_class = re.search(r'\[[a-z]+\]', filename).group()
+            filename_class[1:4]
+            for name in classes:
+                if fnmatch.fnmatchcase(filename, '*' + name + '*'):
+                    test_labels.append(name)
+                    break
+            else:
+                test_labels.append('other')
         # Text file
-        for filename in fnmatch.filter(filenames, '*.txt'):
-            f = open(os.path.join(root, filename), 'r')
-            data = f.read().split()
-            instruments = ''
-            for s in data:
-                instruments += '[' + s + ']'
-            test_labels.append(instruments)
+        # for filename in fnmatch.filter(filenames, '*.txt'):
+        #     f = open(os.path.join(root, filename), 'r')
+        #     data = f.read().split()
+        #     instruments = ''
+        #     for s in data:
+        #         instruments += '[' + s + ']'
+        #     test_labels.append(instruments)
     print("found %d audio files in %s" % (len(test_files), test_path))
     return [test_files, test_labels]
