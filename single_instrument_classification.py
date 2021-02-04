@@ -7,7 +7,6 @@ import seaborn
 import matplotlib.pyplot as plt
 from IPython.core.display import HTML, display
 
-
 from sklearn.model_selection import train_test_split, StratifiedShuffleSplit
 from sklearn.metrics import recall_score, precision_score, accuracy_score
 from sklearn.metrics import confusion_matrix, f1_score, classification_report
@@ -26,8 +25,10 @@ from audio_analysis import label_encoder_for_test
 
 from load_files import load_train_set
 
-if __name__ == '__main__':
-    data_set, data_labels = load_train_set()
+
+# if __name__ == '__main__':
+def run_algo():
+    data_set, data_labels = load_train_set('./data-set/')
     train_files, test_files, train_labels, test_labels = train_test_split(data_set, data_labels, test_size=0.25)
 
     # classes_num_train = label_encoder(train_labels)
@@ -113,7 +114,6 @@ if __name__ == '__main__':
     # Compute confusion matrix
     cnf_matrix = confusion_matrix(test_classes, predicted_labels)
     np.set_printoptions(precision=2)
-
 
     # Function to Plot Confusion Matrix
     # http://scikit-learn.org/stable/auto_examples/model_selection/plot_confusion_matrix.html
