@@ -24,6 +24,14 @@ def run():
     data_set, data_labels = load_train_set('./data-set/')
     train_files, test_files, train_labels, test_labels = train_test_split(data_set, data_labels, test_size=0.25)
 
+    for label in range(len(train_labels)):
+        if train_labels[label] not in test_labels:
+            train_labels[label] = "other"
+
+    for label in range(len(test_labels)):
+        if test_labels[label] not in train_labels:
+            test_labels[label] = "other"
+
     train_classes, encoded_classes = label_encoder(train_labels)
     test_classes = label_encoder_for_test(encoded_classes, test_labels)
 
@@ -33,4 +41,3 @@ def run():
     knn(train_set, train_classes, test_set, test_classes)
     svm(train_set, train_classes, test_set, test_classes)
     random_forest(train_set, train_classes, test_set, test_classes, encoded_classes)
-
