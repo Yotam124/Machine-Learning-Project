@@ -38,7 +38,7 @@ def label_encoder_for_test(encoded_classes, test_labels):
     classes_num = []
     for label in test_labels:
         if label not in encoded_classes:
-            classes_num.append(len(test_labels)*2)
+            classes_num.append(len(test_labels) * 2)
         else:
             classes_num.append(encoded_classes.index(label))
 
@@ -55,6 +55,8 @@ def get_feature_vector(files):
     sound_paths = []
     for i, f in enumerate(files):
         print("get %d of %d = %s" % (i + 1, len(files), f))
+        s = "get %d of %d = %s" % (i + 1, len(files), f)
+
         try:
             y, sr = librosa.load(f, sr=fs)
             y /= y.max()  # Normalize
