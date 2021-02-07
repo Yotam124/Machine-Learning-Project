@@ -58,13 +58,14 @@ def load_test_set(test_path='./IRMAS-TrainingData/'):
         for filename in fnmatch.filter(filenames, '*.wav'):
             test_files.append(os.path.join(root, filename))
             filename_class = re.search(r'\[[a-z]+\]', filename).group()
-            filename_class[1:4]
+            filename_class = filename_class[1:4]
+
             for name in classes:
-                if fnmatch.fnmatchcase(filename, '' + name[0:3] + ''):
+                if fnmatch.fnmatchcase(filename_class, '*' + name[0:3] + '*'):
                     test_labels.append(name)
                     break
-                # else:
-                #     test_labels.append('other')
+            else:
+                test_labels.append('other')
         # Text file
         # for filename in fnmatch.filter(filenames, '*.txt'):
         #     f = open(os.path.join(root, filename), 'r')
