@@ -36,6 +36,8 @@ def load_train_set(train_path='./data-set/', single_instrument=True):
         train_labels.append(result)
         if not classes.__contains__(result):
             classes.append(result)
+
+       # train_labels.append('other')
     return [train_files, train_labels]
 
 
@@ -47,11 +49,11 @@ def load_test_set(test_path='./IRMAS-TrainingData/'):
         'cello',
         'clarinet',
         'flute',
-        'guitar',
+        'piano',
         'saxophone',
         'trumpet',
         'violin',
-
+        'voice'
     ]
     for root, dirnames, filenames in os.walk(test_path):
         # Audio file
@@ -60,11 +62,11 @@ def load_test_set(test_path='./IRMAS-TrainingData/'):
             filename_class = re.search(r'\[[a-z]+\]', filename).group()
             filename_class[1:4]
             for name in classes:
-                if fnmatch.fnmatchcase(filename, '*' + name + '*'):
+                if fnmatch.fnmatchcase(filename, '*' + name[0:3] + '*'):
                     test_labels.append(name)
                     break
-            else:
-                test_labels.append('other')
+                # else:
+                #     test_labels.append('other')
         # Text file
         # for filename in fnmatch.filter(filenames, '*.txt'):
         #     f = open(os.path.join(root, filename), 'r')

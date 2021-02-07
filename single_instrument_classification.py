@@ -24,10 +24,12 @@ from audio_analysis import label_encoder
 from audio_analysis import label_encoder_for_test
 
 from load_files import load_train_set
+from load_files import load_test_set
 
 
-# if __name__ == '__main__':
+#if __name__ == '__main__':
 def run_algo():
+
     data_set, data_labels = load_train_set('./data-set/')
     train_files, test_files, train_labels, test_labels = train_test_split(data_set, data_labels, test_size=0.25)
 
