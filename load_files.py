@@ -36,8 +36,6 @@ def load_train_set(train_path='./data-set/', single_instrument=True):
         train_labels.append(result)
         if not classes.__contains__(result):
             classes.append(result)
-
-       # train_labels.append('other')
     return [train_files, train_labels]
 
 
@@ -62,7 +60,7 @@ def load_test_set(test_path='./IRMAS-TrainingData/'):
             filename_class = re.search(r'\[[a-z]+\]', filename).group()
             filename_class[1:4]
             for name in classes:
-                if fnmatch.fnmatchcase(filename, '*' + name[0:3] + '*'):
+                if fnmatch.fnmatchcase(filename, '' + name[0:3] + ''):
                     test_labels.append(name)
                     break
                 # else:
