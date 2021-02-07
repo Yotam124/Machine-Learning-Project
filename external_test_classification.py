@@ -59,8 +59,6 @@ def run():
     train_set = get_feature_vector(train_files)
     test_set = get_feature_vector(test_files)
 
-    read_write_data.create_data_file(train_set, train_labels)
-
     knn(train_set, train_classes, test_set, test_classes)
     svm(train_set, train_classes, test_set, test_classes)
     random_forest(train_set, train_classes, test_set, test_classes, encoded_classes)
