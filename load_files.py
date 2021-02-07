@@ -80,3 +80,48 @@ def load_test_set(genre, by_genre=False, test_path='./IRMAS-TrainingData/'):
         #     test_labels.append(instruments)
     print("found %d audio files in %s" % (len(test_files), test_path))
     return [test_files, test_labels]
+
+
+def read_data_file(path='./train_test_data.txt'):
+    train_set = []
+    train_labels = []
+
+    with open(path, 'r') as file_handle:
+        start_read_labels = False
+        for line in file_handle:
+            vector = []
+            if line.strip() == 'train_set':
+                vector = []
+                for v in file_handle:
+                    if v.strip() == 'train_classes':
+                        start_read_labels = True
+                        break
+                    if v.strip() == '':
+                        train_set.append(vector)
+                        vector = []
+                    else:
+                        sp = v.split()
+                        for num in sp:
+                            num = num.replace('[', '').replace(']', '')
+                            if num == '':
+                                continue
+                            vector.append(float(num))
+
+            if start_read_labels:
+                for label in file_handle:
+                    train_labels.append(label.strip())
+
+    return [train_set, train_labels]
+
+
+def create_data_file(train_set, train_classes):
+    with open('train_test_data.txt', 'w') as file_handle:
+
+        file_handle.write('train_set\n')
+        for s in train_set:
+            file_handle.write('%s\n' % s)
+            file_handle.write('\n')
+
+        file_handle.write('train_classes\n')
+        for s in train_classes:
+            file_handle.write('%s\n' % s)
