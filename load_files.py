@@ -39,7 +39,7 @@ def load_train_set(train_path='./data-set/', single_instrument=True):
     return [train_files, train_labels]
 
 
-def load_test_set(test_path='./IRMAS-TrainingData/'):
+def load_test_set(audio_type, test_path='./IRMAS-TrainingData/'):
     # Get Audio Files for test
     test_files = []
     test_labels = []
@@ -55,7 +55,8 @@ def load_test_set(test_path='./IRMAS-TrainingData/'):
     ]
     for root, dirnames, filenames in os.walk(test_path):
         # Audio file
-        for filename in fnmatch.filter(filenames, '*.wav'):
+        regex_pattern = re.compile(fr'^\[[a-z]+\](\[{audio_type}\])')
+        for filename in fnmatch.filter(filenames, f'*{regex_pattern}*.wav'):
             test_files.append(os.path.join(root, filename))
             filename_class = re.search(r'\[[a-z]+\]', filename).group()
             filename_class[1:4]

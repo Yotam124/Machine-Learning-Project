@@ -9,9 +9,9 @@ def cut_to_chunks(path, label):
     for root, dirnames, filenames in os.walk(path):
         for i, filename in enumerate(fnmatch.filter(filenames, '*.wav')):
             print(filename)
-            myaudio = AudioSegment.from_file(os.path.join(root, filename), "wav")
+            my_audio = AudioSegment.from_file(os.path.join(root, filename), "wav")
             chunk_length_ms = 1000  # pydub calculates in millisec
-            chunks = make_chunks(myaudio, chunk_length_ms)  # Make chunks of one sec
+            chunks = make_chunks(my_audio, chunk_length_ms)  # Make chunks of one sec
 
             # Export all of the individual chunks as wav files
 
