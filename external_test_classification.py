@@ -8,7 +8,6 @@ import matplotlib.pyplot as plt
 from IPython.core.display import HTML, display
 
 # ML Functions
-import read_write_data
 from ML_Algorithms import knn, svm, random_forest
 
 from sklearn.model_selection import train_test_split
