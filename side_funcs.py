@@ -47,14 +47,14 @@ def cut_to_chunks(path, label):
 
 
 def cut_a_single_song(path):
-    song = os.walk(path)
-    my_audio = AudioSegment.from_file(song, "wav")
+    my_audio = AudioSegment.from_file(path, "wav")
     chunk_length_ms = 1000  # pydub calculates in millisec
     chunks = make_chunks(my_audio, chunk_length_ms)  # Make chunks of one sec
 
-    return chunks
-    # chunks_list = []
-    # for i, chunk in enumerate(chunks):
-    #     chunk_name = f'{path}_chunk{0}.wav'.format(i)
-    #     print("cut", chunk_name)
-    #     chunk.export(chunk_name, format="wav")
+    chunks_list = []
+    for i, chunk in enumerate(chunks):
+        chunk_name = f'{path}_chunk{0}.wav'.format(i)
+        print("cut", chunk_name)
+        chunks_list.append(chunk_name)
+
+    return chunks_list
