@@ -48,6 +48,9 @@ def load_test_set(genre, by_genre=False, test_path='./IRMAS-TrainingData/'):
         'clarinet',
         'flute',
         'piano',
+        'gac',
+        'gel',
+        'org',
         'saxophone',
         'trumpet',
         'violin',
@@ -106,8 +109,8 @@ def read_data_file(path='./train_test_data.txt'):
     return [train_set, train_labels]
 
 
-def create_data_file(train_set, train_classes):
-    with open('train_test_data.txt', 'w') as file_handle:
+def create_data_file(train_set, train_classes, file_name='train_test_data.txt'):
+    with open(file_name, 'w') as file_handle:
 
         file_handle.write('train_set\n')
         for s in train_set:
