@@ -33,6 +33,6 @@ def run():
     train_classes, encoded_classes = label_encoder(train_labels)
     test_classes = label_encoder_for_test(encoded_classes, test_labels)
 
-    knn(train_set, train_classes, test_set, test_classes)
-    svm(train_set, train_classes, test_set, test_classes)
+    knn(train_set, train_classes, test_set, test_classes, encoded_classes)
+    svm(train_set, train_classes, test_set, test_classes, encoded_classes)
     random_forest(train_set, train_classes, test_set, test_classes, encoded_classes)
