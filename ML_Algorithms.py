@@ -1,6 +1,9 @@
 import itertools
+import operator
 
 import numpy as np
+import math
+from collections import Counter
 
 import matplotlib.pyplot as plt
 import seaborn as sn
@@ -180,5 +183,14 @@ def knn_song_clf(train_set, train_classes, test_set, test_classes, encoded_class
     for label in predicted_labels:
         predicted_decoded_labels.append(encoded_classes[label])
 
+    label_count = Counter(predicted_decoded_labels)
+    threshold_label = []
+    for label_i in label_count:
+        if label_count[label_i] >= math.sqrt(len(label_count)) - 1:
+            threshold_label.append(label_i)
+
+    print('Threshold: ', math.sqrt(len(label_count)) - 1)
     print('Predicted labels: ', predicted_decoded_labels)
+    print('Predicted labels: ', label_count)
+    print('Threshold label: ', threshold_label)
     print('True labels: ', test_classes)

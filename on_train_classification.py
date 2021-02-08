@@ -28,14 +28,6 @@ def run():
 
     train_files, test_files, train_labels, test_labels = train_test_split(data_set, data_labels, test_size=0.25)
 
-    # for label in range(len(train_labels)):
-    #     if train_labels[label] not in test_labels:
-    #         train_labels[label] = "other"
-    #
-    # for label in range(len(test_labels)):
-    #     if test_labels[label] not in train_labels:
-    #         test_labels[label] = "other"
-
     train_files, train_labels, test_files, test_labels = fit_train_test(train_files, train_labels, test_files,
                                                                         test_labels)
 

@@ -21,9 +21,10 @@ from side_funcs import fit_train_test, cut_a_single_song
 
 
 def run():
-    train_files, train_labels = read_data_file()
+    train_files, train_labels = read_data_file('./train_test_data_combined.txt')
 
-    test_files, test_labels = cut_a_single_song('./IRMAS-TestingData/Part1/01 Just One Of Those Things-14')
+    song_name = "01 El Patufet-3"
+    test_files, test_labels = cut_a_single_song(f'./IRMAS-TestingData/Part1/{song_name}')
 
     print("test_labels length: ", len(test_labels))
     print("test_files length: ", len(test_files))
