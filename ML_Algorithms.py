@@ -161,3 +161,20 @@ def random_forest(train_set, train_classes, test_set, test_classes, encoded_clas
     plt.figure(figsize=(18, 13))
     plot_confusion_matrix(cnf_matrix, classes=encoded_classes,
                           title='Confusion matrix, without normalization')
+
+
+def knn_song_clf(train_set, train_classes, test_set, test_classes):
+    # Machine Learning Parameters
+    n_neighbors = 1  # Number of neighbors for kNN Classifier
+
+    # KNN Classifier
+    model_knn = KNeighborsClassifier(n_neighbors=n_neighbors)
+
+    # kNN
+    model_knn.fit(train_set, train_classes)
+
+    # Predict using the Test Set
+    predicted_labels = model_knn.predict(test_set)
+
+    print('Predicted labels: ', predicted_labels)
+    print('True labels: ', test_classes)
