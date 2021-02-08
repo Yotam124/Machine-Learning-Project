@@ -18,13 +18,15 @@ from audio_analysis import label_encoder
 from audio_analysis import label_encoder_for_test
 
 from load_files import load_train_set, load_test_set, read_data_file
+
 from side_funcs import fit_train_test
 
 
-def run(genre):
+def run():
     # train_files, train_labels = load_train_set('./data-set/')
     train_files, train_labels = read_data_file()
-    test_files, test_labels = load_test_set(genre, by_genre=True, test_path='./IRMAS-TrainingData/')
+
+    test_files, test_labels = load_test_set('./IRMAS-TrainingData/')
 
     train_files, train_labels, test_files, test_labels = fit_train_test(train_files, train_labels, test_files,
                                                                         test_labels)
@@ -42,6 +44,8 @@ def run(genre):
     train_set = train_files
     test_set = get_feature_vector(test_files)
 
-    knn(train_set, train_classes, test_set, test_classes)
-    svm(train_set, train_classes, test_set, test_classes)
+    # read_write_data.create_data_file(train_set, train_labels)
+
+    knn(train_set, train_classes, test_set, test_classes, encoded_classes)
+    svm(train_set, train_classes, test_set, test_classes, encoded_classes)
     random_forest(train_set, train_classes, test_set, test_classes, encoded_classes)

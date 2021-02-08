@@ -59,7 +59,7 @@ def plot_confusion_matrix(cm, classes,
 
 
 # ------------------------------------------------ KNN ------------------------------------------------
-def knn(train_set, train_classes, test_set, test_classes):
+def knn(train_set, train_classes, test_set, test_classes, encoded_classes):
     # Machine Learning Parameters
     n_neighbors = 1  # Number of neighbors for kNN Classifier
 
@@ -90,9 +90,18 @@ def knn(train_set, train_classes, test_set, test_classes):
     print("Number of samples:", test_classes.shape[0])
     print()
 
+    # Compute confusion matrix
+    cnf_matrix = confusion_matrix(test_classes, predicted_labels)
+    np.set_printoptions(precision=2)
+
+    # Plot non-normalized confusion matrix
+    plt.figure(figsize=(18, 13))
+    plot_confusion_matrix(cnf_matrix, classes=encoded_classes,
+                          title='KNN')
+
 
 # ------------------------------------------------ SVM ------------------------------------------------
-def svm(train_set, train_classes, test_set, test_classes):
+def svm(train_set, train_classes, test_set, test_classes, encoded_classes):
     # model_svm = LinearSVC(random_state=0, tol=1e-5, max_iter=5000)
     svclassifier = SVC(kernel='rbf', C=10.0, gamma=0.1)
 
@@ -126,6 +135,14 @@ def svm(train_set, train_classes, test_set, test_classes):
           accuracy_score(test_classes, predicted_labels, normalize=False))
     print("Number of samples:", test_classes.shape[0])
     print()
+    # Compute confusion matrix
+    cnf_matrix = confusion_matrix(test_classes, predicted_labels)
+    np.set_printoptions(precision=2)
+
+    # Plot non-normalized confusion matrix
+    plt.figure(figsize=(18, 13))
+    plot_confusion_matrix(cnf_matrix, classes=encoded_classes,
+                          title='SVM')
 
 
 # ------------------------------------------------ Random Forest ------------------------------------------------
@@ -163,7 +180,7 @@ def random_forest(train_set, train_classes, test_set, test_classes, encoded_clas
     # Plot non-normalized confusion matrix
     plt.figure(figsize=(18, 13))
     plot_confusion_matrix(cnf_matrix, classes=encoded_classes,
-                          title='Confusion matrix, without normalization')
+                          title='Random Forest')
 
 
 def knn_song_clf(train_set, train_classes, test_set, test_classes, encoded_classes):
