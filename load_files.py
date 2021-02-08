@@ -70,14 +70,6 @@ def load_test_set(genre, by_genre=False, test_path='./IRMAS-TrainingData/'):
                         break
                 else:
                     test_labels.append('other')
-        # Text file
-        # for filename in fnmatch.filter(filenames, '*.txt'):
-        #     f = open(os.path.join(root, filename), 'r')
-        #     data = f.read().split()
-        #     instruments = ''
-        #     for s in data:
-        #         instruments += '[' + s + ']'
-        #     test_labels.append(instruments)
     print("found %d audio files in %s" % (len(test_files), test_path))
     return [test_files, test_labels]
 

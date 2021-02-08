@@ -18,6 +18,7 @@ from audio_analysis import label_encoder
 from audio_analysis import label_encoder_for_test
 
 from load_files import load_train_set, load_test_set, read_data_file
+from side_funcs import fit_train_test
 
 
 def run(genre):
@@ -25,6 +26,8 @@ def run(genre):
     train_files, train_labels = read_data_file()
     test_files, test_labels = load_test_set(genre, by_genre=True, test_path='./IRMAS-TrainingData/')
 
+    train_files, train_labels, test_files, test_labels = fit_train_test(train_files, train_labels, test_files,
+                                                                        test_labels)
     print("test_labels length: ", len(test_labels))
     print("test_files length: ", len(test_files))
     print()
