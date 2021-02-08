@@ -22,7 +22,6 @@ from load_files import load_train_set, load_test_set, read_data_file
 from side_funcs import fit_train_test
 
 
-
 def run():
     # train_files, train_labels = load_train_set('./data-set/')
     train_files, train_labels = read_data_file()

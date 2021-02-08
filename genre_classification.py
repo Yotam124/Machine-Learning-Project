@@ -28,6 +28,7 @@ def run(genre):
 
     train_files, train_labels, test_files, test_labels = fit_train_test(train_files, train_labels, test_files,
                                                                         test_labels)
+
     print("test_labels length: ", len(test_labels))
     print("test_files length: ", len(test_files))
     print()
