@@ -76,3 +76,34 @@ def get_feature_vector(files):
     scaled_feature_vectors = scaler.fit_transform(np.array(feature_vectors))
     print("Feature vectors shape:", scaled_feature_vectors.shape)
     return scaled_feature_vectors
+
+
+def get_feature_vector_2(files):
+    feature_vectors = []
+    sound_paths = []
+    for i, f in enumerate(files):
+        print("get %d of %d = %s" % (i + 1, len(files), f))
+        s = "get %d of %d = %s" % (i + 1, len(files), f)
+
+        try:
+            y, sr = librosa.load(f, sr=44100)
+            rms = librosa.feature.rms(y=y)
+            spec_cent = librosa.feature.spectral_centroid(y=y, sr=sr)
+            spec_bw = librosa.feature.spectral_bandwidth(y=y, sr=sr)
+            rolloff = librosa.feature.spectral_rolloff(y=y, sr=sr)
+            zcr = librosa.feature.zero_crossing_rate(y)
+            mfcc = librosa.feature.mfcc(y=y, sr=sr)
+            to_append = [np.mean(rms), np.mean(spec_cent), np.mean(spec_bw), np.mean(rolloff), np.mean(zcr)]
+            for e in mfcc:
+                to_append.append(np.mean(e))
+        except Exception as e:
+            print("Error loading %s. Error: %s" % (f, e))
+        feature_vectors.append(to_append)
+
+    print("Calculated %d feature vectors" % len(feature_vectors))
+
+    # Scale features using Standard Scaler
+    scaler = StandardScaler()
+    scaled_feature_vectors = scaler.fit_transform(np.array(feature_vectors))
+    print("Feature vectors shape:", scaled_feature_vectors.shape)
+    return scaled_feature_vectors

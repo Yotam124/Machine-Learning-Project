@@ -25,12 +25,11 @@ def load_train_set(train_path='./data-set/', single_instrument=True):
     classes = []
     for filename in train_files:
         if single_instrument:
-            # result = re.search(r'\[[a-z]+\](\[[a-z]+_[a-z]+\])*', filename).group()
-            result = filename.split('_')
-            result = result[0]
-            result = result.split('\\')
-            result = result[len(result) - 1]
-
+            result = re.search(r'\[[a-z]+\](\[[a-z]+_[a-z]+\])*', filename).group()
+            # result = filename.split('_')
+            # result = result[0]
+            # result = result.split('\\')
+            # result = result[len(result)-1]
         else:
             result = re.search(r'(\[[a-z]+\](\[[a-z]+\])*)', filename).group()
         train_labels.append(result)
@@ -39,7 +38,7 @@ def load_train_set(train_path='./data-set/', single_instrument=True):
     return [train_files, train_labels]
 
 
-def load_test_set(genre, by_genre=False, test_path='./IRMAS-TrainingData/'):
+def load_test_set(genre='', by_genre=False, test_path='./IRMAS-TrainingData/'):
     # Get Audio Files for test
     test_files = []
     test_labels = []
@@ -75,6 +74,35 @@ def load_test_set(genre, by_genre=False, test_path='./IRMAS-TrainingData/'):
                     test_labels.append('other')
     print("found %d audio files in %s" % (len(test_files), test_path))
     return [test_files, test_labels]
+
+
+def load_by_genre(path='./IRMAS-TrainingData/'):
+    # Get Audio Files for train
+    train_files = []
+    # regex_pattern = re.compile(r'^\[[a-z]+\](\[[a-z]+_[a-z]+\])+')
+    # regex_pattern = re.compile(r'^\[[a-z]+\](\[pop_roc\])')
+    for root, dirnames, filenames in os.walk(path):
+        for filename in fnmatch.filter(filenames, '*.wav'):
+            train_files.append(os.path.join(root, filename))
+
+    print("found %d audio files in %s" % (len(train_files), path))
+
+    # Get Labels for train-set
+    train_labels = []
+    classes = []
+    for filename in train_files:
+        result = re.search(r'\[[a-z]+\](\[[a-z]+_[a-z]+\])*', filename).group()
+        result = result.replace('[', '-').replace(']', '')
+        result = result.split('-')
+        label = 'no_genre'
+        for r in result:
+            if r.__contains__('_'):
+                label = r
+                break
+        train_labels.append(label)
+        if not classes.__contains__(result):
+            classes.append(result)
+    return [train_files, train_labels]
 
 
 def read_data_file(path='./train_test_data.txt'):
